@@ -1,0 +1,11 @@
+# AI Video Toolkit — pip dependencies
+# Install:  pip install -r requirements.txt
+# Note: insightface 0.7.x needs onnxruntime; GPU users should swap in
+# onnxruntime-gpu and set ctx_id=0 in face-swap/swap.py load_models().
+
+gradio>=4.0
+insightface==0.7.3
+onnxruntime
+opencv-python
+numpy
+faster-whisper

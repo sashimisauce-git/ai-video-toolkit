@@ -1,43 +1,71 @@
-# AI Video Toolkit
+# AI Video Toolkit 🎬
 
 Open-source tools for AI video creators: keep a consistent face across
 generated clips, burn word-by-word karaoke captions, and publish one reel
 to every platform with a single command.
 
-Built for the AI-UGC workflow — generate the scene, lock the face, caption
-it, ship it.
+**No coding required.** Double-click one file and everything runs in your
+browser.
+
+---
+
+## 🚀 Easiest start (no coding)
+
+**You need:** Python 3 (from [python.org](https://www.python.org/downloads/))
+and ffmpeg (`brew install ffmpeg` on Mac, `winget install ffmpeg` on Windows).
+
+| System | What to do |
+|---|---|
+| Mac / Linux | Download this repo (green **Code** button → **Download ZIP**), unzip, double-click **`start.sh`** |
+| Windows | Download ZIP, unzip, double-click **`start.bat`** |
+
+That's it. The launcher installs everything, downloads the AI models once
+(~700MB, first run only), and opens the toolkit in your browser at
+`http://127.0.0.1:7860`.
+
+In the browser you get two tools:
+
+1. **Face Swap** — upload a clear photo of a face + a video. The face gets
+   locked onto every frame. Motion and expressions come from the video.
+2. **Karaoke Captions** — upload voiceover audio, get word-by-word
+   highlighted subtitles. Add a video to burn them straight in.
+
+Everything runs 100% on your computer. No uploads, no accounts, no fees.
+
+---
+
+## 🛠 Command-line usage (for developers)
+
+```bash
+pip install -r requirements.txt
+python download_models.py   # one-time model download
+
+# 1. Lock the face
+python face-swap/swap.py \
+  --source face-ref.png --target generated.mp4 --output locked.mp4
+
+# 2. Caption it
+python karaoke-captions/make_karaoke.py \
+  --input voiceover.mp3 --output karaoke.ass
+ffmpeg -i locked.mp4 -vf "ass=karaoke.ass" -c:a copy captioned.mp4
+
+# 3. Publish it
+cd reel-publisher && ./publish.sh captioned.mp4 caption.txt
+```
 
 ## Tools
 
 | Tool | What it does |
 |---|---|
-| [face-swap](face-swap/) | Lock a consistent face onto AI-generated video (InsightFace). Generate for motion/background, swap the reference face onto every frame. |
+| [face-swap](face-swap/) | Lock a consistent face onto AI-generated video (InsightFace). Generate for motion/background, swap the reference face onto every frame. Edge-free blending: inverse-warp + XSeg occlusion mask + color matching. |
 | [karaoke-captions](karaoke-captions/) | Word-by-word highlighted subtitles from any voiceover audio (faster-whisper → ASS). Burn in with ffmpeg. |
 | [reel-publisher](reel-publisher/) | One-command publishing: validate video, post to Instagram via API, stage TikTok/YouTube uploads with a manifest, log everything. |
-
-## Quickstart
-
-```bash
-# 1. Lock the face
-cd face-swap
-# (download models first — see face-swap/README.md)
-python swap.py --source face-ref.png --target generated.mp4 --output locked.mp4
-
-# 2. Caption it
-cd ../karaoke-captions
-python make_karaoke.py --input voiceover.mp3 --output karaoke.ass
-ffmpeg -i locked.mp4 -vf "ass=karaoke.ass" -c:a copy captioned.mp4
-
-# 3. Publish it
-cd ../reel-publisher
-./publish.sh captioned.mp4 caption.txt
-```
 
 ## Requirements
 
 - Python 3.8+
-- `ffmpeg` + `ffprobe`
-- See each tool's README for its Python packages and model downloads.
+- `ffmpeg` + `ffprobe` on your PATH
+- ~1.5GB disk for AI models (auto-downloaded on first run)
 
 ## Pipeline tips
 
